@@ -5,7 +5,7 @@ on:
  pull_request:
 
 jobs:
-  build:
+  rspec:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     services:
@@ -45,6 +45,27 @@ jobs:
           bundle exec rails db:create RAILS_ENV=test
           bundle exec rails db:migrate RAILS_ENV=test
 
-      - name: Run rspec and rubocop
+      - name: Run rspec
         run: bundle exec rspec
+
+  rubocop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.4
+          bundler-cache: true
+
+      - name: Bundler and gem install
+        run: |
+          gem install bundler
+          bundle install 
+
+      - name: Run rubocop 
         run: bundle exec rubocop
